@@ -1,0 +1,68 @@
+#!/usr/bin/python3
+
+import os
+from datetime import datetime
+from lxml import etree
+from io import StringIO
+import requests
+
+HTML_INPUT_URL = "https://www.hannover.de/Leben-in-der-Region-Hannover/" \
+                 "Verwaltungen-Kommunen/Die-Verwaltung-der-Region-Hannover/" \
+                 "Region-Hannover/Aktuelle-Informationen-zum-Coronavirus-der-Region-Hannover"
+PATH_HTML_OUTPUT = "html_files"
+XPATH_TITLE = "/html/head/title"
+XPATH_ARTICLE = "/html/body/div/main/div[@id='main_content']//article[@class='content-view-full']"
+XPATH_DATE = "/html/body/div/main/div[@id='main_content']//article[@class='content-view-full']//time/@content"
+
+TEMPLATE = """<!DOCTYPE html>
+<html lang="de">
+<head>
+    {title}
+</head>
+<body>
+    {body}
+</body>
+</html>
+"""
+
+
+def get_timestamp():
+    # --- Timestamp to year, month, day, week
+    now = datetime.now()
+    return now.year, now.strftime("%m"), now.strftime("%d"), int(now.strftime('%W'))+1
+
+
+def get_html(page):
+    # --- Grabbing an URL and Parse it to html, title, extracted_body, modified_date_time, modified_date
+    # Set explicit HTMLParser
+    parser = etree.HTMLParser()
+    # Decode the page content from bytes to string
+    r_html = page.content.decode("utf-8")
+    tree = etree.parse(StringIO(r_html), parser=parser)
+    article = tree.xpath(XPATH_ARTICLE)
+    r_extracted_body = "".join([etree.tostring(element, encoding="unicode", pretty_print=True) for element in article])
+
+    r_title = "".join([etree.tostring(bar, encoding="unicode", pretty_print=True) for bar in tree.xpath(XPATH_TITLE)])
+    r_mod_date = tree.xpath(XPATH_DATE)[0][:10]
+    r_mod_date_time = tree.xpath(XPATH_DATE)[0][:19].replace(":", ".")
+
+    return r_html, r_extracted_body, r_title, r_mod_date_time, r_mod_date
+
+
+def write_html(filename, content):
+    if not os.path.isdir(PATH_HTML_OUTPUT):
+        os.mkdir(PATH_HTML_OUTPUT)
+    
+    with open(f"{filename}", "w") as text_file:
+        print(content, file=text_file)
+
+
+if __name__ == '__main__':
+    year, month, day, week = get_timestamp()
+    html, extracted_body, title, modified_date_time, modified_date = get_html(page=requests.get(HTML_INPUT_URL))
+
+    write_html(f"{PATH_HTML_OUTPUT}/{modified_date_time}_original__{year}-{month}-{day}.html", html)
+    write_html(f"{PATH_HTML_OUTPUT}/{modified_date_time}_extracted__{year}-{month}-{day}.html",
+               TEMPLATE.format(body=extracted_body, title=title))
+
+    print(f"Document grabed and saved (which is modified on: {modified_date_time})")
