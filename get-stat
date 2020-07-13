@@ -5,6 +5,7 @@ from datetime import datetime
 from lxml import etree
 from io import StringIO
 import requests
+import glob
 
 HTML_INPUT_URL = "https://www.hannover.de/Leben-in-der-Region-Hannover/" \
                  "Verwaltungen-Kommunen/Die-Verwaltung-der-Region-Hannover/" \
@@ -61,8 +62,11 @@ if __name__ == '__main__':
     year, month, day, week = get_timestamp()
     html, extracted_body, title, modified_date_time, modified_date = get_html(page=requests.get(HTML_INPUT_URL))
 
-    write_html(f"{PATH_HTML_OUTPUT}/{modified_date_time}_original__{year}-{month}-{day}.html", html)
-    write_html(f"{PATH_HTML_OUTPUT}/{modified_date_time}_extracted__{year}-{month}-{day}.html",
-               TEMPLATE.format(body=extracted_body, title=title))
+    if not glob.glob(f"{PATH_HTML_OUTPUT}/{modified_date_time}_*.html"):
+        write_html(f"{PATH_HTML_OUTPUT}/{modified_date_time}_original__{year}-{month}-{day}.html", html)
+        write_html(f"{PATH_HTML_OUTPUT}/{modified_date_time}_extracted__{year}-{month}-{day}.html",
+                TEMPLATE.format(body=extracted_body, title=title))
 
-    print(f"Document grabed and saved (which is modified on: {modified_date_time})")
+        print(f"Document grabed and saved (which is modified on: {modified_date_time})")
+    else:
+        print(f"GRABED DOCUMENT (modified on {modified_date_time}) ALREADY EXISTS!")
