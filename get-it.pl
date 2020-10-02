@@ -1,6 +1,9 @@
 #!/usr/bin/perl
+
 use strict;
 use warnings;
+use CGI;
+
 use POSIX qw(strftime);
 use Cwd;
 
@@ -19,6 +22,9 @@ use Cwd;
 #
 # get current path
 # https://perlmaven.com/current-working-directory
+
+my $cgi = CGI->new();
+print $cgi->header;
 
 # --- get page
 
