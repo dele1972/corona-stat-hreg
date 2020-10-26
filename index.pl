@@ -29,17 +29,17 @@ foreach my $file(@files){
     print "<li><a href='" . $file . "'>" . $file . "</a></li>"
 }
 
-print "<h2>Duplikate</h2>";
-foreach my $file(@filesDuplicates){
-    print "<li><a href='" . $file . "'>" . $file . "</a></li>"
-}
-
 print "<h2>Fehler</h2>";
 foreach my $file(@filesErrors){
     print "<li><a href='" . $file . "'>" . $file . "</a></li>"
 }
 
 print "<h2>Duplikate</h2>";
+foreach my $file(@filesDuplicates){
+    print "<li><a href='" . $file . "'>" . $file . "</a></li>"
+}
+
+print "<h2>Bearbeitet</h2>";
 foreach my $file(@filesProcessed){
     print "<li><a href='" . $file . "'>" . $file . "</a></li>"
 }
