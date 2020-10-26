@@ -20,7 +20,28 @@ END
 
 # my $path = getcwd;
 my @files = <./get-it--grabbed/*.html>;
+my @filesProcessed = <../../.data-nogit/store-web-data/processed/*.html>;
+my @filesDuplicates = <../../.data-nogit/store-web-data/processed/duplicate/*.html>;
+my @filesErrors = <../../.data-nogit/store-web-data/processed/error/*.html>;
+
+print "<h2>Unbearbeitet</h2>";
 foreach my $file(@files){
     print "<li><a href='" . $file . "'>" . $file . "</a></li>"
 }
+
+print "<h2>Duplikate</h2>";
+foreach my $file(@filesDuplicates){
+    print "<li><a href='" . $file . "'>" . $file . "</a></li>"
+}
+
+print "<h2>Fehler</h2>";
+foreach my $file(@filesErrors){
+    print "<li><a href='" . $file . "'>" . $file . "</a></li>"
+}
+
+print "<h2>Duplikate</h2>";
+foreach my $file(@filesProcessed){
+    print "<li><a href='" . $file . "'>" . $file . "</a></li>"
+}
+
 print "</ul></body></html>";
