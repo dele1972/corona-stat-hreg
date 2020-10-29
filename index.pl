@@ -20,9 +20,9 @@ END
 
 # my $path = getcwd;
 my @files = <./get-it--grabbed/*.html>;
-my @filesProcessed = <../../.data-nogit/store-web-data/processed/*.html>;
-my @filesDuplicates = <../../.data-nogit/store-web-data/processed/duplicate/*.html>;
-my @filesErrors = <../../.data-nogit/store-web-data/processed/error/*.html>;
+my @filesProcessed = <../store-web-data/processed/*.html>;
+my @filesDuplicates = <../store-web-data/processed/duplicate/*.html>;
+my @filesErrors = <../store-web-data/processed/error/*.html>;
 
 print "<h2>Unbearbeitet</h2>";
 foreach my $file(@files){
